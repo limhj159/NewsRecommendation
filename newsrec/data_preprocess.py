@@ -397,7 +397,7 @@ def data_preprocess():
 
     print('Generate word embedding')
     generate_word_embedding(
-        f'../data/glove/glove.840B.{config.word_embedding_dim}d.txt',
+        f'./data/glove/glove.840B.{config.word_embedding_dim}d.txt',
         path.join(train_dir, 'pretrained_word_embedding.npy'),
         path.join(train_dir, 'word2int.tsv'))
 
