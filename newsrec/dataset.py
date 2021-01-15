@@ -3,12 +3,12 @@ import pandas as pd
 from ast import literal_eval
 from os import path
 import numpy as np
-from config import model_name
+from newsrec.config import model_name
 import importlib
 import torch
 
 try:
-    config = getattr(importlib.import_module('config'), f"{model_name}Config")
+    config = getattr(importlib.import_module('newsrec.config'), f"{model_name}Config")
 except AttributeError:
     print(f"{model_name} not included!")
     exit()

@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from model.general.attention.multihead_self import MultiHeadSelfAttention
-from model.general.attention.additive import AdditiveAttention
+from newsrec.model.general.attention.multihead_self import MultiHeadSelfAttention
+from newsrec.model.general.attention.additive import AdditiveAttention
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 

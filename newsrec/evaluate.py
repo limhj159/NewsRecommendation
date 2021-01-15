@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.metrics import roc_auc_score
 from tqdm import tqdm
 import torch
-from config import model_name
+from newsrec.config import model_name
 from torch.utils.data import Dataset, DataLoader
 from os import path
 import sys
@@ -11,8 +11,8 @@ from ast import literal_eval
 import importlib
 
 try:
-    Model = getattr(importlib.import_module(f"model.{model_name}"), model_name)
-    config = getattr(importlib.import_module('config'), f"{model_name}Config")
+    Model = getattr(importlib.import_module(f"newsrec.model.{model_name}"), model_name)
+    config = getattr(importlib.import_module('newsrec.config'), f"{model_name}Config")
 except AttributeError:
     print(f"{model_name} not included!")
     exit()
@@ -307,7 +307,7 @@ def evaluate(model, directory, max_count=sys.maxsize):
     return np.mean(aucs), np.mean(mrrs), np.mean(ndcg5s), np.mean(ndcg10s)
 
 
-if __name__ == '__main__':
+def evaluation():
     print('Using device:', device)
     print(f'Evaluating model {model_name}')
     # Don't need to load pretrained word/entity/context embedding

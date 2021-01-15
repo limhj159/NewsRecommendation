@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="glove.840B.300d">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/data/glove.840B.300d.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

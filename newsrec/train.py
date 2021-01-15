@@ -1,22 +1,22 @@
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-from dataset import BaseDataset
+from newsrec.dataset import BaseDataset
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import time
 import numpy as np
-from config import model_name
+from newsrec.config import model_name
 from tqdm import tqdm
 import os
 from pathlib import Path
-from evaluate import evaluate
+from newsrec.evaluate import evaluate
 import importlib
 import datetime
 
 try:
-    Model = getattr(importlib.import_module(f"model.{model_name}"), model_name)
-    config = getattr(importlib.import_module('config'), f"{model_name}Config")
+    Model = getattr(importlib.import_module(f"newsrec.model.{model_name}"), model_name)
+    config = getattr(importlib.import_module('newsrec.config'), f"{model_name}Config")
 except AttributeError:
     print(f"{model_name} not included!")
     exit()
@@ -112,8 +112,8 @@ def train():
     else:
         print(models[0])
 
-    dataset = BaseDataset('data/train/behaviors_parsed.tsv',
-                          'data/train/news_parsed.tsv', 'data/train/roberta')
+    dataset = BaseDataset('./data/train/behaviors_parsed.tsv',
+                          './data/train/news_parsed.tsv', './data/train/roberta')
 
     print(f"Load training dataset with size {len(dataset)}.")
 

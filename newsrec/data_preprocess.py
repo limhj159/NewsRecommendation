@@ -1,4 +1,4 @@
-from config import model_name
+from newsrec.config import model_name
 import pandas as pd
 import swifter
 import json
@@ -15,7 +15,7 @@ from transformers import RobertaTokenizer, RobertaModel
 import torch
 
 try:
-    config = getattr(importlib.import_module('config'), f"{model_name}Config")
+    config = getattr(importlib.import_module('newsrec.config'), f"{model_name}Config")
 except AttributeError:
     print(f"{model_name} not included!")
     exit()
@@ -127,49 +127,49 @@ def parse_news(source, target, roberta_output_dir, category2int_path,
         'abstract_mask_roberta'
     ]
 
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    for x in [title_roberta, abstract_roberta]:
-        for key in x.keys():
-            x[key] = torch.tensor(x[key]).to(device)
-    Path(roberta_output_dir).mkdir(parents=True, exist_ok=True)
-    roberta = RobertaModel.from_pretrained('roberta-base',
-                                           return_dict=True).to(device)
-    with torch.no_grad():
-        title_last_hidden_state = []
-        title_pooler_output = []
-        abstract_last_hidden_state = []
-        abstract_pooler_output = []
-        for count in tqdm(range(math.ceil(len(news) / config.batch_size)),
-                          desc="Calculating news embeddings with RoBERTa"):
-            title_roberta_minibatch = {
-                k: v[count * config.batch_size:(1 + count) * config.batch_size]
-                for k, v in title_roberta.items()
-            }
-            title_outputs = roberta(**title_roberta_minibatch)
-            title_last_hidden_state.append(
-                title_outputs['last_hidden_state'].cpu().numpy())
-            title_pooler_output.append(
-                title_outputs['pooler_output'].cpu().numpy())
-
-            abstract_roberta_minibatch = {
-                k: v[count * config.batch_size:(1 + count) * config.batch_size]
-                for k, v in abstract_roberta.items()
-            }
-            abstract_outputs = roberta(**abstract_roberta_minibatch)
-            abstract_last_hidden_state.append(
-                abstract_outputs['last_hidden_state'].cpu().numpy())
-            abstract_pooler_output.append(
-                abstract_outputs['pooler_output'].cpu().numpy())
-
-        np.save(path.join(roberta_output_dir, 'title_last_hidden_state.npy'),
-                np.concatenate(title_last_hidden_state, axis=0))
-        np.save(path.join(roberta_output_dir, 'title_pooler_output.npy'),
-                np.concatenate(title_pooler_output, axis=0))
-        np.save(
-            path.join(roberta_output_dir, 'abstract_last_hidden_state.npy'),
-            np.concatenate(abstract_last_hidden_state, axis=0))
-        np.save(path.join(roberta_output_dir, 'abstract_pooler_output.npy'),
-                np.concatenate(abstract_pooler_output, axis=0))
+    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # for x in [title_roberta, abstract_roberta]:
+    #     for key in x.keys():
+    #         x[key] = torch.tensor(x[key]).to(device)
+    # Path(roberta_output_dir).mkdir(parents=True, exist_ok=True)
+    # roberta = RobertaModel.from_pretrained('roberta-base',
+    #                                        return_dict=True).to(device)
+    # with torch.no_grad():
+    #     title_last_hidden_state = []
+    #     title_pooler_output = []
+    #     abstract_last_hidden_state = []
+    #     abstract_pooler_output = []
+    #     for count in tqdm(range(math.ceil(len(news) / config.batch_size)),
+    #                       desc="Calculating news embeddings with RoBERTa"):
+    #         title_roberta_minibatch = {
+    #             k: v[count * config.batch_size:(1 + count) * config.batch_size]
+    #             for k, v in title_roberta.items()
+    #         }
+    #         title_outputs = roberta(**title_roberta_minibatch)
+    #         title_last_hidden_state.append(
+    #             title_outputs['last_hidden_state'].cpu().numpy())
+    #         title_pooler_output.append(
+    #             title_outputs['pooler_output'].cpu().numpy())
+    #
+    #         abstract_roberta_minibatch = {
+    #             k: v[count * config.batch_size:(1 + count) * config.batch_size]
+    #             for k, v in abstract_roberta.items()
+    #         }
+    #         abstract_outputs = roberta(**abstract_roberta_minibatch)
+    #         abstract_last_hidden_state.append(
+    #             abstract_outputs['last_hidden_state'].cpu().numpy())
+    #         abstract_pooler_output.append(
+    #             abstract_outputs['pooler_output'].cpu().numpy())
+    #
+    #     np.save(path.join(roberta_output_dir, 'title_last_hidden_state.npy'),
+    #             np.concatenate(title_last_hidden_state, axis=0))
+    #     np.save(path.join(roberta_output_dir, 'title_pooler_output.npy'),
+    #             np.concatenate(title_pooler_output, axis=0))
+    #     np.save(
+    #         path.join(roberta_output_dir, 'abstract_last_hidden_state.npy'),
+    #         np.concatenate(abstract_last_hidden_state, axis=0))
+    #     np.save(path.join(roberta_output_dir, 'abstract_pooler_output.npy'),
+    #             np.concatenate(abstract_pooler_output, axis=0))
 
     def parse_row(row):
         new_row = [
@@ -374,10 +374,10 @@ def transform_entity_embedding(source, target, entity2int_path):
     np.save(target, entity_embedding_transformed)
 
 
-if __name__ == '__main__':
-    train_dir = './data/train'
-    val_dir = './data/val'
-    test_dir = './data/test'
+def data_preprocess():
+    train_dir = '../data/train'
+    val_dir = '../data/val'
+    test_dir = '../data/test'
 
     print('Process data for training')
 
@@ -397,7 +397,7 @@ if __name__ == '__main__':
 
     print('Generate word embedding')
     generate_word_embedding(
-        f'./data/glove/glove.840B.{config.word_embedding_dim}d.txt',
+        f'../data/glove/glove.840B.{config.word_embedding_dim}d.txt',
         path.join(train_dir, 'pretrained_word_embedding.npy'),
         path.join(train_dir, 'word2int.tsv'))
 

@@ -1,7 +1,7 @@
 import torch
-from model.NAML.news_encoder import NewsEncoder
-from model.NAML.user_encoder import UserEncoder
-from model.general.click_predictor.dot_product import DotProductClickPredictor
+from newsrec.model.NAML.news_encoder import NewsEncoder
+from newsrec.model.NAML.user_encoder import UserEncoder
+from newsrec.model.general.click_predictor.dot_product import DotProductClickPredictor
 
 
 class NAML(torch.nn.Module):
