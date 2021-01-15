@@ -13,6 +13,6 @@
 # ROBERTA_LEVEL=word python3 src/train.py
 
 MODEL_NAME=NRMS
-#python run.py --top preprocess
-python run.py --top training
+python run.py --top preprocess
+#python run.py --top training
 #python run.py --top evaluation
